@@ -1,0 +1,4 @@
+1,project1,DELETED,1,2/1
+2,project2,FINISHED,1,2
+3,project3,ACTIVE,1,2
+4,project4,ACTIVE,2,1/3
