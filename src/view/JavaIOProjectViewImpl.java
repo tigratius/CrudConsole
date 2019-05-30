@@ -34,6 +34,13 @@ public class JavaIOProjectViewImpl extends ProjectView {
     private final String finishMenuMessage = "Завершение проекта.\n" +
             Message.ID.getMessage();
 
+    private final String addSameCategoryMessage = "Категория уже добавлена! Выберете другую...\n" +
+                                                    "ID = ";
+
+    private final String wantAddCategoryMessage = "Хотите добавить еще категорию? (y/n):";
+
+    private final String answerYes = "y";
+
     public JavaIOProjectViewImpl(ProjectController projectController, Scanner sc, BaseView customerView, BaseView categoryView) {
         this.projectController = projectController;
         this.sc = sc;
@@ -234,16 +241,16 @@ public class JavaIOProjectViewImpl extends ProjectView {
 
             if (categoryIds.contains(categoryId))
             {
-                System.out.println("Категория с ID = " + categoryId + " уже добавлена! Выберете другую...");
+                System.out.println(addSameCategoryMessage + categoryId);
             }
             else
             {
                 categoryIds.add(categoryId);
             }
 
-            System.out.println("Хотите добавить еще категорию? (y/n): ");
+            System.out.println(wantAddCategoryMessage);
             String response = sc.next();
-            if (!response.equalsIgnoreCase("y")) {
+            if (!response.equalsIgnoreCase(answerYes)) {
                 break;
             }
             System.out.println(Message.LINE.getMessage());

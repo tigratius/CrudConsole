@@ -1,9 +1,6 @@
 package repository.io;
 
-import model.Category;
-import model.Customer;
-import model.Project;
-import model.ProjectStatus;
+import model.*;
 import repository.CategoryRepository;
 import repository.CustomerRepository;
 import repository.ProjectRepository;
@@ -13,7 +10,6 @@ import java.util.*;
 
 public class JavaIOProjectRepositoryImpl implements ProjectRepository {
 
-    /*private List<Project> projects;*/
     private CustomerRepository customerRepository;
     private CategoryRepository categoryRepository;
 
@@ -22,7 +18,7 @@ public class JavaIOProjectRepositoryImpl implements ProjectRepository {
     private final String cannotEditFinishedProjectMessage = "Нельзя редактировать завершенный проект!";
     private final String cannotEditDeletedProjectMessage = "Нельзя редактировать удаленный проект!";
 
-    public JavaIOProjectRepositoryImpl(CategoryRepository categoryRepository, CustomerRepository customerRepository) throws Exception {
+    public JavaIOProjectRepositoryImpl(CategoryRepository categoryRepository, CustomerRepository customerRepository) {
         this.categoryRepository = categoryRepository;
         this.customerRepository = customerRepository;
 
@@ -35,7 +31,7 @@ public class JavaIOProjectRepositoryImpl implements ProjectRepository {
         Project current = null;
         for (Project c : projects
         ) {
-            if (c.getId() == id) {
+            if (c.getId().equals(id)) {
                 current = c;
                 break;
             }
@@ -45,22 +41,8 @@ public class JavaIOProjectRepositoryImpl implements ProjectRepository {
             return current;
         }
 
-        throw new Exception("ID = " + id + " нет!");
+        throw new Exception(Message.NOT_FIND_ID.getMessage() + id);
     }
-
-    /*@Override
-    public void add(Project item) throws Exception {
-        Customer customer = customerRepository.getById(item.getCustomerId());
-        Set<Category> categorySet = new HashSet<>();
-        for (Long id : item.getCategoryIds()
-        ) {
-            categorySet.add(categoryRepository.getById(id));
-        }
-        item.setCustomer(customer);
-        item.setCategories(categorySet);
-        item.setId(getLastId() + 1);
-        projects.add(item);
-    }*/
 
     @Override
     public void delete(Project item) throws Exception {
@@ -68,7 +50,7 @@ public class JavaIOProjectRepositoryImpl implements ProjectRepository {
         Project removeProject = null;
         for (Project c: projects
         ) {
-            if (c.getId() == item.getId())
+            if (c.getId().equals(item.getId()))
             {
                 removeProject = c;
                 break;
@@ -130,8 +112,9 @@ public class JavaIOProjectRepositoryImpl implements ProjectRepository {
 
     @Override
     public Long getLastId() throws Exception {
-
         List<Project> projects = stringToData(IOUtil.read(FILE_NAME));
+        Collections.sort(projects, Comparator.comparing(BaseEntity::getId));
+
         if (projects.size() != 0) {
             return projects.get(projects.size() - 1).getId();
         }

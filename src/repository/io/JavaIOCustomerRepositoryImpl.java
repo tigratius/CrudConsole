@@ -1,10 +1,14 @@
 package repository.io;
 
+import model.BaseEntity;
 import model.Customer;
+import model.Message;
 import repository.CustomerRepository;
 import util.IOUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class JavaIOCustomerRepositoryImpl implements CustomerRepository {
@@ -22,7 +26,7 @@ public class JavaIOCustomerRepositoryImpl implements CustomerRepository {
         Customer current = null;
         for (Customer c : customers
         ) {
-            if (c.getId() == id) {
+            if (c.getId().equals(id)) {
                 current = c;
                 break;
             }
@@ -32,23 +36,16 @@ public class JavaIOCustomerRepositoryImpl implements CustomerRepository {
             return current;
         }
 
-        throw new Exception("ID = " + id + " нет!");
+        throw new Exception(Message.NOT_FIND_ID.getMessage() + id);
     }
-
-    /*@Override
-    public void add(Customer item) {
-        item.setId(getLastId() + 1);
-        customers.add(item);
-    }*/
 
     @Override
     public void delete(Customer item) {
-        /*customers.remove(getById(id));*/
         List<Customer> customers = stringToData( IOUtil.read(FILE_NAME));
         Customer removeCustomer = null;
         for (Customer c: customers
         ) {
-            if (c.getId() == item.getId())
+            if (c.getId().equals(item.getId()))
             {
                 removeCustomer = c;
                 break;
@@ -62,8 +59,6 @@ public class JavaIOCustomerRepositoryImpl implements CustomerRepository {
     public void update(Customer item) throws Exception {
         delete(getById(item.getId()));
         save(item);
-        /*Customer customer = getById(item.getId());
-        customer.setName(item.getName());*/
     }
 
     @Override
@@ -80,6 +75,7 @@ public class JavaIOCustomerRepositoryImpl implements CustomerRepository {
     @Override
     public Long getLastId() {
         List<Customer> customers = stringToData( IOUtil.read(FILE_NAME));
+        Collections.sort(customers, Comparator.comparing(BaseEntity::getId));
 
         if (customers.size() != 0) {
             return customers.get(customers.size() - 1).getId();
