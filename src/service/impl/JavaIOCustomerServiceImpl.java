@@ -1,15 +1,19 @@
-package service;
+package service.impl;
 
 import repository.CustomerRepository;
 import model.Customer;
 import repository.ProjectRepository;
+import service.CustomerService;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class JavaIOCustomerServiceImpl implements CustomerService {
 
     private CustomerRepository customerRepo;
     private ProjectRepository projectRepository;
+
+    private final String cannotDeleteCustomerMessage = "Невозможно удалить покупателя, т.к. он привязан к проекту!";
 
     public JavaIOCustomerServiceImpl(CustomerRepository customerRepo, ProjectRepository projectRepository)
     {
@@ -18,44 +22,39 @@ public class JavaIOCustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer get(Long id) throws Exception {
-        return customerRepo.get(id);
+    public Customer getById(Long id) throws Exception {
+        return customerRepo.getById(id);
     }
 
     @Override
     public void create(String name) throws Exception {
         Customer customer = new Customer();
-        customer.name = name;
-        customerRepo.add(customer);
+        customer.setId(customerRepo.getLastId() + 1);
+        customer.setName(name);
+        customerRepo.save(customer);
     }
 
     @Override
     public void delete(Long id) throws Exception {
+        Customer customer = getById(id);
 
-        if (projectRepository.isContainCustomer(customerRepo.get(id))) {
-            throw new Exception("Невозможно удалить покупателя, т.к. он привязан к проекту!");
+        if (projectRepository.isContainCustomer(customer)) {
+            throw new Exception(cannotDeleteCustomerMessage);
         }
 
-        customerRepo.delete(id);
+        customerRepo.delete(customer);
     }
 
     @Override
     public void update(Long id, String name) throws Exception {
         Customer customer = new Customer();
-        customer.id = id;
-        customer.name = name;
+        customer.setId(id);
+        customer.setName(name);
         customerRepo.update(customer);
     }
 
     @Override
-    public ArrayList<Customer> getAll()
-    {
-        return customerRepo.getAll();
-    }
-
-    @Override
-    public void save()
-    {
-        customerRepo.save();
+    public List<Customer> getAll() throws Exception {
+            return customerRepo.getAll();
     }
 }

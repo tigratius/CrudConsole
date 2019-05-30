@@ -1,9 +1,41 @@
 package controller;
+
 import model.Category;
+import service.CategoryService;
 
-public interface CategoryController extends GenericController<Category, Long> {
+import java.util.List;
 
-    void create(String name) throws Exception;
+public class CategoryController {
 
-    void update(Long id, String name) throws Exception;
+    CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService) {
+
+        this.categoryService = categoryService;
+    }
+
+    public List<Category> getAll() throws Exception {
+
+        return categoryService.getAll();
+    }
+
+    public Category getById(Long id) throws Exception {
+
+        return categoryService.getById(id);
+    }
+
+    public void create(String name) throws Exception {
+
+        categoryService.create(name);
+    }
+
+    public void update(Long id, String name) throws Exception {
+
+        categoryService.update(id, name);
+    }
+
+    public void delete(Long id) throws Exception {
+
+        categoryService.delete(id);
+    }
 }

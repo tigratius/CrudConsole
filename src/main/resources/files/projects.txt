@@ -1,0 +1,5 @@
+1,project1,DELETED,1,1/2
+2,project2,FINISHED,1,2
+5,projCr,FINISHED,1,4
+4,deleted,DELETED,2,4
+5,testpo,ACTIVE,2,1/4

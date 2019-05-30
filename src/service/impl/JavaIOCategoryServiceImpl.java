@@ -1,15 +1,19 @@
-package service;
+package service.impl;
 
-import repository.CategoryRepository;
 import model.Category;
+import repository.CategoryRepository;
 import repository.ProjectRepository;
+import service.CategoryService;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class JavaIOCategoryServiceImpl implements CategoryService {
 
     private CategoryRepository categoryRepo;
     private ProjectRepository projectRepository;
+
+    private final String cannotDeleteCategoryMessage = "Невозможно удалить категорию, т.к. она привязана к проекту!";
+
 
     public JavaIOCategoryServiceImpl(CategoryRepository categoryRepo, ProjectRepository projectRepository) {
         this.categoryRepo = categoryRepo;
@@ -17,43 +21,37 @@ public class JavaIOCategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category get(Long id) throws Exception {
-        return categoryRepo.get(id);
+    public Category getById(Long id) throws Exception {
+        return categoryRepo.getById(id);
     }
 
     @Override
     public void create(String name) throws Exception {
         Category category = new Category();
-        category.name = name;
-        categoryRepo.add(category);
+        category.setId(categoryRepo.getLastId() + 1);
+        category.setName(name);
+        categoryRepo.save(category);
     }
 
     @Override
     public void delete(Long id) throws Exception {
-
-        if (projectRepository.isContainCategory(categoryRepo.get(id)))
-        {
-            throw new Exception("Невозможно удалить категорию, т.к. она привязана к проекту!");
+        Category category = getById(id);
+        if (projectRepository.isContainCategory(category)) {
+            throw new Exception(cannotDeleteCategoryMessage);
         }
-
-        categoryRepo.delete(id);
+        categoryRepo.delete(category);
     }
 
     @Override
     public void update(Long id, String name) throws Exception {
         Category category = new Category();
-        category.id = id;
-        category.name = name;
+        category.setId(id);
+        category.setName(name);
         categoryRepo.update(category);
     }
 
     @Override
-    public ArrayList<Category> getAll() {
+    public List<Category> getAll() throws Exception {
         return categoryRepo.getAll();
-    }
-
-    @Override
-    public void save() {
-        categoryRepo.save();
     }
 }

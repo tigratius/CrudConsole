@@ -1,6 +1,6 @@
 package view;
 
-public interface ProjectView extends BaseView{
+public abstract class ProjectView extends BaseView{
 
-    void finish();
+    abstract void finish();
 }

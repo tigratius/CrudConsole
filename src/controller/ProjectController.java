@@ -2,21 +2,57 @@ package controller;
 
 import model.Project;
 import model.ProjectStatus;
+import service.ProjectService;
 
+import java.util.List;
 import java.util.Set;
 
-public interface ProjectController extends GenericController<Project, Long> {
+public class ProjectController{
 
-    void create(String name, ProjectStatus projectStatus, Long customerId, Set<Long> categoryIds) throws Exception;
+    ProjectService projectService;
 
-    void update(Long id, String name, Long customerId, Set<Long> categoryIds) throws Exception;
+    public ProjectController(ProjectService projectService)
+    {
+        this.projectService = projectService;
+    }
 
-    void finish(Long id) throws Exception;
+    public List<Project> getAll() throws Exception {
+        return projectService.getAll();
+    }
 
-    void checkEdit(Long id) throws Exception;
+    /*public void save() {
+        projectService.save();
+    }*/
 
-    void checkCategory(Long id) throws Exception;
+    public Project getById(Long id) throws Exception {
+        return projectService.getById(id);
+    }
 
-    void checkCustomer(Long id) throws Exception;
+    public void create(String name, ProjectStatus projectStatus, Long customerId, Set<Long> categoryIds) throws Exception {
+        projectService.create(name, projectStatus, customerId, categoryIds);
+    }
+
+    public void update(Long id, String name, Long customerId, Set<Long> categoryIds) throws Exception {
+        projectService.update(id, name, customerId, categoryIds);
+    }
+
+    public void finish(Long id) throws Exception {
+        projectService.finish(id);
+    }
+
+    public void checkEdit(Long id) throws Exception {
+        projectService.checkEdit(id);
+    }
+
+    public void checkCategory(Long id) throws Exception {
+        projectService.checkCategory(id);
+    }
+
+    public void checkCustomer(Long id) throws Exception {
+        projectService.checkCustomer(id);
+    }
+
+    public void delete(Long id) throws Exception {
+        projectService.delete(id);
+    }
 }
-

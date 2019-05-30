@@ -1,20 +1,25 @@
 package repository;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface GenericRepository<T, ID> {
 
-    T get(ID id) throws Exception;
+    T getById(ID id) throws Exception;
 
-    void add(T item) throws Exception;
+    /*void add(T item) throws Exception;*/
 
-    void delete(ID id) throws Exception;
+    void delete(T item) throws Exception;
 
     void update(T item) throws Exception;
 
-    void save();
+    void save(T item);
 
-    ArrayList<T> getAll();
+    List<T> getAll() throws Exception;
 
-    ID getLastId();
+    ID getLastId() throws Exception;
+
+    List<T> stringToData(List<String> items) throws Exception;
+
+    List<String> dataToString(List<T> items);
+    String dataToString(T item);
 }

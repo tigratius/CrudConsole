@@ -1,13 +1,11 @@
 package service;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface GenericService<T, ID> {
-        T get(ID id) throws Exception;
+        T getById(ID id) throws Exception;
 
         void delete(ID id) throws Exception;
 
-        ArrayList<T> getAll();
-
-        void save();
+        List<T> getAll() throws Exception;
 }

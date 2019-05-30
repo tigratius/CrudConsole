@@ -1,20 +1,38 @@
 package view;
 
 import controller.ProjectController;
-import model.Category;
-import model.Customer;
-import model.Project;
-import model.ProjectStatus;
-import repository.ProjectRepository;
+import model.*;
 
 import java.util.*;
 
-public class JavaIOProjectViewImpl implements ProjectView {
+public class JavaIOProjectViewImpl extends ProjectView {
 
     private ProjectController projectController;
-    private Scanner sc;
+    /*private Scanner sc;*/
     private BaseView customerView;
     private BaseView categoryView;
+
+    private final String mainMenuMessage = "Выберете действие над проектами:\n" +
+            " 1. Создать проект\n" +
+            " 2. Завершить проект\n" +
+            " 3. Редактировать проект\n" +
+            " 4. Удалить проект\n" +
+            " 5. Вывести список проектов\n" +
+            " 6. Выход";
+
+    private final String printMenuMessage = "Список проектов\n" +
+            "ID; Name; ProjectStatus; CustomerName; Categories";
+
+    private final String createMenuMessage = "Создание проекта.";
+
+    private final String editMenuMessage = "Редактирование проекта.\n" +
+            Message.ID.getMessage();
+
+    private final String deleteMenuMessage = "Удаление проекта.\n" +
+            Message.ID.getMessage();
+
+    private final String finishMenuMessage = "Завершение проекта.\n" +
+            Message.ID.getMessage();
 
     public JavaIOProjectViewImpl(ProjectController projectController, Scanner sc, BaseView customerView, BaseView categoryView) {
         this.projectController = projectController;
@@ -28,15 +46,9 @@ public class JavaIOProjectViewImpl implements ProjectView {
         boolean isExit = false;
         while (true) {
             print();
-            System.out.println("----------------------------------------------");
-            System.out.println("Выберете действие над проектами:");
-            System.out.println(" 1. Создать проект");
-            System.out.println(" 2. Завершить проект");
-            System.out.println(" 3. Редактировать проект");
-            System.out.println(" 4. Удалить проект");
-            System.out.println(" 5. Вывести список проектов");
-            System.out.println(" 6. Выход");
-            System.out.println("----------------------------------------------");
+            System.out.println(Message.LINE.getMessage());
+            System.out.println(mainMenuMessage);
+            System.out.println(Message.LINE.getMessage());
 
             String response = sc.next();
 
@@ -57,11 +69,10 @@ public class JavaIOProjectViewImpl implements ProjectView {
                     print();
                     break;
                 case "6":
-                    projectController.save();
                     isExit = true;
                     break;
                 default:
-                    System.out.println("Неправильный ввод. Повторите попытку!");
+                    System.out.println(Message.ERROR_INPUT.getMessage());
                     break;
             }
 
@@ -72,30 +83,28 @@ public class JavaIOProjectViewImpl implements ProjectView {
 
     @Override
     public void create() {
-        System.out.println("----------------------------------------------");
-        System.out.println("Создание проекта");
+        System.out.println(Message.LINE.getMessage());
+        System.out.println(createMenuMessage);
         String name = createProjectName();
-        /*ProjectStatus projectStatus = chooseProjectStatus();*/
         Long customerId = chooseCustomer();
         Set<Long> categoryIds = chooseCategories();
         try {
             projectController.create(name, ProjectStatus.ACTIVE, customerId, categoryIds);
-            System.out.println("Проект создан!");
+            System.out.println(Message.SUCCESSFUL_OPERATION.getMessage());
         }
         catch (Exception e)
         {
             System.out.println(e.getMessage());
-            System.out.println("При создании проекта возникла ошибка! Проект не создан!");
+            System.out.println(Message.ERROR_OPERATION.getMessage());
         }
 
-        System.out.println("----------------------------------------------");
+        System.out.println(Message.LINE.getMessage());
     }
 
     @Override
     public void edit() {
-        System.out.println("----------------------------------------------");
-        System.out.println("Редактирование проекта");
-        System.out.println("Введите ID проекта, который редактировать: ");
+        System.out.println(Message.LINE.getMessage());
+        System.out.println(editMenuMessage);
         Long id = sc.nextLong();
 
         try
@@ -105,61 +114,67 @@ public class JavaIOProjectViewImpl implements ProjectView {
         catch (Exception e)
         {
             System.out.println(e.getMessage());
-            System.out.println("При редактировании проекта возникла ошибка!");
+            System.out.println(Message.ERROR_OPERATION.getMessage());
             return;
         }
 
         String name = createProjectName();
-        /*ProjectStatus projectStatus = chooseProjectStatus();*/
         Long customerId = chooseCustomer();
         Set<Long> categoryIds = chooseCategories();
         try
         {
             projectController.update(id, name, customerId, categoryIds);
-            System.out.println("Проект отредактирован!");
+            System.out.println(Message.SUCCESSFUL_OPERATION.getMessage());
         }
         catch (Exception e)
         {
             System.out.println(e.getMessage());
-            System.out.println("При редактировании проекта возникла ошибка!");
+            System.out.println(Message.ERROR_OPERATION.getMessage());
         }
 
-        System.out.println("----------------------------------------------");
+        System.out.println(Message.LINE.getMessage());
     }
 
     @Override
     public void delete() {
-        System.out.println("----------------------------------------------");
-        System.out.println("Удаление проекта");
-        System.out.println("Введите ID проекта, который удалить: ");
+        System.out.println(Message.LINE.getMessage());
+        System.out.println(deleteMenuMessage);
         Long id = sc.nextLong();
         try
         {
             projectController.delete(id);
-            System.out.println(" Проект удален!");
+            System.out.println(Message.SUCCESSFUL_OPERATION.getMessage());
         }
         catch (Exception e)
         {
             System.out.println(e.getMessage());
-            System.out.println("При удалении проекта возникла ошибка!");
+            System.out.println(Message.ERROR_OPERATION.getMessage());
         }
 
-        System.out.println("----------------------------------------------");
+        System.out.println(Message.LINE.getMessage());
     }
 
     @Override
     public void print() {
-        ArrayList<Project> projects = projectController.getAll();
-        System.out.println("----------------------------------------------");
-        System.out.println("Список проектов");
-        System.out.println("ID; Name; ProjectStatus; CustomerName; Categories");
+        List<Project> projects;
+        try {
+            projects = projectController.getAll();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            return;
+        }
+        Collections.sort(projects, Comparator.comparing(BaseEntity::getId));
+        System.out.println(Message.LINE.getMessage());
+        System.out.println(printMenuMessage);
         if (projects.size() != 0) {
             for (Project p : projects) {
-                String printLine = p.id + "; " + p.name + "; " + p.projectStatus + "; " + p.customer.name + "; ";
+                String printLine = p.getId() + "; " + p.getName() + "; " + p.getProjectStatus() + "; " + p.getCustomer().getName() + "; ";
                 StringJoiner joiner = new StringJoiner("/");
-                for (Category c : p.categories
+                for (Category c : p.getCategories()
                 ) {
-                    joiner.add(c.name);
+                    joiner.add(c.getName());
                 }
                 printLine += joiner.toString();
                 System.out.println(printLine);
@@ -167,60 +182,46 @@ public class JavaIOProjectViewImpl implements ProjectView {
         }
         else
         {
-            System.out.println("Проектов нет");
+            System.out.println(Message.EMPTY_LIST.getMessage());
         }
-        System.out.println("----------------------------------------------");
+        System.out.println(Message.LINE.getMessage());
     }
 
     @Override
     public void finish() {
-        System.out.println("----------------------------------------------");
-        System.out.println("Завершение проекта");
-        System.out.println("Введите ID проекта, который завершить: ");
+        System.out.println(Message.LINE.getMessage());
+        System.out.println(finishMenuMessage);
         Long id = sc.nextLong();
         try
         {
             projectController.finish(id);
-            System.out.println(" Проект завершен!");
+            System.out.println(Message.SUCCESSFUL_OPERATION.getMessage());
         }
         catch (Exception e)
         {
             System.out.println(e.getMessage());
-            System.out.println("При завершении проекта возникла ошибка!");
+            System.out.println(Message.ERROR_OPERATION.getMessage());
         }
 
-        System.out.println("----------------------------------------------");
+        System.out.println(Message.LINE.getMessage());
     }
 
     /*Private methods*/
     private String createProjectName() {
-        System.out.println("----------------------------------------------");
-        System.out.println("Введите имя проекта:");
+        System.out.println(Message.LINE.getMessage());
+        System.out.println(Message.NAME.getMessage());
         String name = sc.next();
-        System.out.println("----------------------------------------------");
+        System.out.println(Message.LINE.getMessage());
         return name;
     }
-
-    /*private ProjectStatus chooseProjectStatus() {
-        System.out.println("----------------------------------------------");
-        System.out.println("Выберете статус:");
-        List<ProjectStatus> projectStatusList = Arrays.asList(ProjectStatus.values());
-        for (ProjectStatus ps : projectStatusList
-        ) {
-            System.out.print(ps.getValue() + ". " + ps);
-        }
-        int status = sc.nextInt();
-        System.out.println("----------------------------------------------");
-        return projectStatusList.get(status - 1);
-    }*/
 
     private Set<Long> chooseCategories() {
 
         Set<Long> categoryIds = new HashSet<>();
         while (true) {
             categoryView.print();
-            System.out.println("----------------------------------------------");
-            System.out.println("Выберете ID категории:");
+            System.out.println(Message.LINE.getMessage());
+            System.out.println(Message.ID.getMessage());
             Long categoryId = sc.nextLong();
             try {
                 projectController.checkCategory(categoryId);
@@ -245,7 +246,7 @@ public class JavaIOProjectViewImpl implements ProjectView {
             if (!response.equalsIgnoreCase("y")) {
                 break;
             }
-            System.out.println("----------------------------------------------");
+            System.out.println(Message.LINE.getMessage());
         }
 
         return categoryIds;
@@ -255,8 +256,8 @@ public class JavaIOProjectViewImpl implements ProjectView {
         Long customerId;
         while (true) {
             customerView.print();
-            System.out.println("----------------------------------------------");
-            System.out.println("Выберете ID покупателя:");
+            System.out.println(Message.LINE.getMessage());
+            System.out.println(Message.ID.getMessage());
             customerId = sc.nextLong();
             try {
                 projectController.checkCustomer(customerId);
@@ -268,7 +269,7 @@ public class JavaIOProjectViewImpl implements ProjectView {
                 continue;
             }
         }
-        System.out.println("----------------------------------------------");
+        System.out.println(Message.LINE.getMessage());
         return customerId;
     }
 }

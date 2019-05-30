@@ -1,3 +1,4 @@
 1,category1
-2,category2
 3,category3
+2,category2
+4,category4

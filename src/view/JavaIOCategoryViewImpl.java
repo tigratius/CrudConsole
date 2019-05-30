@@ -1,136 +1,121 @@
 package view;
 
 import controller.CategoryController;
+import model.BaseEntity;
 import model.Category;
+import model.Message;
 
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
-public class JavaIOCategoryViewImpl implements BaseView {
+public class JavaIOCategoryViewImpl extends BaseView {
 
     CategoryController categoryController;
-    private Scanner sc;
+    /*private Scanner sc;*/
+
+    private final String mainMenuMessage = "Выберете действие над категориями:\n" +
+            " 1. Создать\n" +
+            " 2. Редактировать\n" +
+            " 3. Удалить\n" +
+            " 4. Вывести список категорий\n" +
+            " 5. Выход";
+
+    private final String printMenuMessage = "Список категорий:\n" +
+            "ID; NAME";
+
+    private final String createMenuMessage = "Создание категории.\n" +
+            Message.NAME.getMessage();
+
+    private final String editMenuMessage = "Редактирование категории.\n" +
+            Message.ID.getMessage();
+
+    private final String deleteMenuMessage = "Удаление категории\n" +
+            Message.ID.getMessage();
+
 
     public JavaIOCategoryViewImpl(CategoryController categoryController, Scanner sc) {
         this.categoryController = categoryController;
         this.sc = sc;
-    }
-
-    @Override
-    public void show() {
-
-        boolean isExit = false;
-        while (true) {
-            print();
-            System.out.println("----------------------------------------------");
-            System.out.println("Выберете действие над категориями:");
-            System.out.println(" 1. Создать");
-            System.out.println(" 2. Редактировать");
-            System.out.println(" 3. Удалить");
-            System.out.println(" 4. Вывести список категорий");
-            System.out.println(" 5. Выход");
-            System.out.println("----------------------------------------------");
-            String response = sc.next();
-
-            switch (response) {
-                case "1":
-                    create();
-                    break;
-                case "2":
-                    edit();
-                    break;
-                case "3":
-                    delete();
-                    break;
-                case "4":
-                    print();
-                    break;
-                case "5":
-                    categoryController.save();
-                    isExit = true;
-                    break;
-                default:
-                    System.out.println("Неправильный ввод. Повторите попытку!");
-                    break;
-            }
-
-            if (isExit)
-                break;
-        }
+        this.message = mainMenuMessage;
     }
 
     public void create()
     {
-        System.out.println("----------------------------------------------");
-        System.out.println("Создание категории.");
-        System.out.println("Введите имя категории:");
+        System.out.println(Message.LINE.getMessage());
+        System.out.println(createMenuMessage);
         String name = sc.next();
         try {
             categoryController.create(name);
-            System.out.println("Категория успешно создана.");
+            System.out.println(Message.SUCCESSFUL_OPERATION.getMessage());
         }
         catch (Exception e)
         {
             System.out.println(e.getMessage());
-            System.out.println("При создании категории возникла ошибка! Категория не создана!");
+            System.out.println(Message.ERROR_OPERATION.getMessage());
         }
-        System.out.println("----------------------------------------------");
+        System.out.println(Message.LINE.getMessage());
     }
 
     public void edit()
     {
-        System.out.println("----------------------------------------------");
-        System.out.println("Редактирование категории.");
-        System.out.println("Введите ID категории, которую редактировать:");
+        System.out.println(Message.LINE.getMessage());
+        System.out.println(editMenuMessage);
         Long id = sc.nextLong();
-        System.out.println("Введите новое имя:");
+        System.out.println(Message.NAME.getMessage());
         String name = sc.next();
         try {
             categoryController.update(id, name);
-            System.out.println("Категория успешно отредактирована.");
+            System.out.println(Message.SUCCESSFUL_OPERATION.getMessage());
         }
         catch (Exception e)
         {
             System.out.println(e.getMessage());
-            System.out.println("При редактировании категории возникла ошибка!");
+            System.out.println(Message.ERROR_OPERATION.getMessage());
         }
 
-        System.out.println("----------------------------------------------");
+        System.out.println(Message.LINE.getMessage());
     }
 
     public void delete()
     {
-        System.out.println("----------------------------------------------");
-        System.out.println("Удаление категории");
-        System.out.println("Введите ID категории, которую удалить:");
+        System.out.println(Message.LINE.getMessage());
+        System.out.println(deleteMenuMessage);
         Long id = sc.nextLong();
         try {
             categoryController.delete(id);
-            System.out.println("Категория удалена.");
+            System.out.println(Message.SUCCESSFUL_OPERATION.getMessage());
         }
         catch (Exception e)
         {
             System.out.println(e.getMessage());
-            System.out.println("При удалении категории возникла ошибка!");
+            System.out.println(Message.ERROR_OPERATION.getMessage());
         }
-        System.out.println("----------------------------------------------");
+        System.out.println(Message.LINE.getMessage());
     }
 
     public void print()
     {
-        ArrayList<Category> categories = categoryController.getAll();
-        System.out.println("----------------------------------------------");
-        System.out.println("Список категорий:");
-        System.out.println("ID; NAME");
+        List<Category> categories;
+        try {
+            categories = categoryController.getAll();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        System.out.println(Message.LINE.getMessage());
+        System.out.println(printMenuMessage);
+        Collections.sort(categories, Comparator.comparing(BaseEntity::getId));
         if (categories.size() != 0) {
             for (Category c : categories) {
-                System.out.println(c.id + "; " + c.name);
+                System.out.println(c.getId() + "; " + c.getName());
             }
         }
         else
         {
-            System.out.println("Категорий нет");
+            System.out.println(Message.EMPTY_LIST.getMessage());
         }
-        System.out.println("----------------------------------------------");
+        System.out.println(Message.LINE.getMessage());
     }
 }

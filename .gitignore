@@ -6,3 +6,4 @@
 *.jar
 *.ear
 *.rar
+/out
