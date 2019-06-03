@@ -1,4 +1,4 @@
-# CrudConsole
+# main.java.com.tigratius.crud.CrudConsole
 
 ## Описание
 
@@ -18,16 +18,16 @@ projects.txt, categories.txt, customers.txt
 Пользователь в консоли должен иметь возможность создания, получения, редактирования и удаления данных. 
 
 Слои:    
-model - POJO клаcсы   
-repository - классы, реализующие доступ к текстовым файлам  
-controller - обработка запросов от пользователя   
-view - все данные, необходимые для работы с консолью  
+main.java.com.tigratius.crud.model - POJO клаcсы   
+main.java.com.tigratius.crud.repository - классы, реализующие доступ к текстовым файлам  
+main.java.com.tigratius.crud.controller - обработка запросов от пользователя   
+main.java.com.tigratius.crud.view - все данные, необходимые для работы с консолью  
 
 ## Инструкция по запуску 
 
 1) Скачать приложение 
 
-2) Перейти в репозиторий по ссылке https://github.com/tigratius/CrudConsole 
+2) Перейти в репозиторий по ссылке https://github.com/tigratius/main.java.com.tigratius.crud.CrudConsole 
 
 3) Кликнуть зеленую кнопку "Clone or Download" в правой верхней части страницы. 
 
@@ -35,4 +35,4 @@ view - все данные, необходимые для работы с кон
 
 5) Открыть проект в intellij idea 
 
-6) Запустить класс CrudConsole
+6) Запустить класс main.java.com.tigratius.crud.CrudConsole
