@@ -1,4 +1,4 @@
-# main.java.com.tigratius.crud.CrudConsole
+# CrudConsole
 
 ## Описание
 
@@ -27,7 +27,7 @@ main.java.com.tigratius.crud.view - все данные, необходимые 
 
 1) Скачать приложение 
 
-2) Перейти в репозиторий по ссылке https://github.com/tigratius/main.java.com.tigratius.crud.CrudConsole 
+2) Перейти в репозиторий по ссылке https://github.com/tigratius/CrudConsole 
 
 3) Кликнуть зеленую кнопку "Clone or Download" в правой верхней части страницы. 
 
